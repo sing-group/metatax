@@ -1,0 +1,680 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pipeline xmlns="http://www.sing-group.org/compi/pipeline-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<version>2019.08.08</version>
+    <params>
+        <param name="samples_dir" shortName="samples_dir" defaultValue="">Samples directory</param>
+        <param name="samples" shortName="samples" defaultValue="">Sample file names</param>
+        <param name="samples_fasta" shortName="samples_fasta" defaultValue="">Fasta files</param>
+        <param name="map_tsv" shortName="map_tsv" defaultValue="">TSV file with sample description and details</param>
+        <param name="barcodes_fastq" shortName="barcodes_fastq" defaultValue="">File with sequence barcodes</param>
+        <param name="results_dir" shortName="results_dir" defaultValue="">Results directory</param>
+        <param name="cd_out_dir" shortName="cd_out_dir" defaultValue="">Qiime core diversity output directory</param>
+        <param name="otus_dir" shortName="otus_dir" defaultValue="">Qiime otus output directory</param>
+        <param name="vmfmap_dir" shortName="vmfmap_dir" defaultValue="">Validate mapping output directory</param>
+        <param name="slout_dir" shortName="slout_dir" defaultValue="">Splitted libraries output directory</param>
+        <param name="count_seqs_dir" shortName="count_seqs_dir" defaultValue="">Count sequences output directory</param>
+        <param name="otu_param_file" shortName="otu_param_file" defaultValue="">File with reference OTU parameters</param>
+        <param name="otu_picking_method" shortName="otu_picking_method" defaultValue="">The default method to pick OTUs</param>
+        <param name="otu_table" shortName="otu_table" defaultValue="">Table with OTUs information in biom format</param>
+        <param name="phylogeny_dir" shortName="phylogeny_dir" defaultValue="">Phylogeny output directory</param>
+        <param name="alignments_dir" shortName="alignments_dir" defaultValue="">Alignments output directory</param>
+        <param name="phyloseq_dir" shortName="phyloseq_dir" defaultValue="">Phyloseq output directory</param>
+        <param name="validate_mapping_file" shortName="validate_mapping_file" defaultValue="/root/miniconda3/envs/qiime1/bin/validate_mapping_file.py">validate_mapping_file - Qiime command</param>
+        <param name="count_seqs" shortName="count_seqs" defaultValue="/root/miniconda3/envs/qiime1/bin/count_seqs.py">count_seqs - Qiime command</param>
+        <param name="pick_open_reference_otus" shortName="pick_open_reference_otus" defaultValue="/root/miniconda3/envs/qiime1/bin/pick_open_reference_otus.py">pick_open_reference_otus - Qiime command</param>
+        <param name="biom" shortName="biom" defaultValue="/root/miniconda3/envs/qiime1/bin/biom">biom summarize-table - Qiime command</param>
+        <param name="core_diversity_analyses" shortName="core_diversity_analyses" defaultValue="/root/miniconda3/envs/qiime1/bin/core_diversity_analyses.py">core_diversity_analyses - Qiime command</param>
+        <param name="make_emperor" shortName="make_emperor" defaultValue="/root/miniconda3/envs/qiime1/bin/make_emperor.py">make_emperor - Qiime command</param>
+        <param name="biom_convert" shortName="biom_convert" defaultValue="/root/miniconda3/envs/qiime1/bin/biom_convert.py">biom_convert - Qiime command</param>
+        <param name="align_seqs" shortName="align_seqs" defaultValue="/root/miniconda3/envs/qiime1/bin/align_seqs.py">align_seqs.py - Qiime command</param>
+        <param name="make_phylogeny" shortName="make_phylogeny" defaultValue="/root/miniconda3/envs/qiime1/bin/make_phylogeny.py">make_phylogeny.py - Qiime command</param>
+       <param name="join_paired_ends" shortName="join_paired_ends" defaultValue="/root/miniconda3/envs/qiime1/bin/join_paired_ends.py">join_paired_ends.py - Qiime command</param>
+       <param name="multiple_split_libraries_fastq" shortName="multiple_split_libraries_fastq" defaultValue="/root/miniconda3/envs/qiime1/bin/multiple_split_libraries_fastq.py">multiple_split_libraries_fastq.py - Qiime command</param>
+       <param name="single_rarefaction" shortName="single_rarefaction" defaultValue="/root/miniconda3/envs/qiime1/bin/single_rarefaction.py">single_rarefaction.py - Qiime command</param>
+       <param name="alpha_rarefaction" shortName="alpha_rarefaction" defaultValue="/root/miniconda3/envs/qiime1/bin/alpha_rarefaction.py">alpha_rarefaction.py - Qiime command</param>
+       <param name="beta_diversity_through_plots" shortName="beta_diversity_through_plots" defaultValue="/root/miniconda3/envs/qiime1/bin/beta_diversity_through_plots.py">beta_diversity_through_plots.py - Qiime command</param>
+       <param name="alpha_diversity" shortName="alpha_diversity" defaultValue="/root/miniconda3/envs/qiime1/bin/alpha_diversity.py">alpha_diversity.py - Qiime command</param>
+       <param name="compare_alpha_diversity" shortName="compare_alpha_diversity" defaultValue="/root/miniconda3/envs/qiime1/bin/compare_alpha_diversity.py">compare_alpha_diversity.py - Qiime command</param>
+       <param name="collate_alpha" shortName="collate_alpha" defaultValue="/root/miniconda3/envs/qiime1/bin/collate_alpha.py">collate_alpha.py - Qiime command</param>
+       <param name="compare_categ" shortName="compare_categ" defaultValue="/root/miniconda3/envs/qiime1/bin/compare_categories.py">compare_categories.py - Qiime command</param>
+       <param name="filter_otus_from_otu_table" shortName="filter_otus_from_otu_table" defaultValue="/root/miniconda3/envs/qiime1/bin/filter_otus_from_otu_table.py">filter_otus_from_otu_table.py - Qiime command</param>
+       <param name="group_significance" shortName="group_significance" defaultValue="/root/miniconda3/envs/qiime1/bin/group_significance.py">group_significance.py - Qiime command</param>
+
+    </params>
+    
+	<tasks>
+		<task id="initialization" params="results_dir vmfmap_dir slout_dir count_seqs_dir cd_out_dir alignments_dir">
+		    mkdir -p ${results_dir}
+		</task>
+
+		<task id="validate_mapping" after="initialization" params="results_dir vmfmap_dir validate_mapping_file samples_dir map_tsv">
+            source activate qiime1
+            rm -rf ${results_dir}/${vmfmap_dir}
+            export PYTHONWARNINGS="ignore"
+            ${validate_mapping_file} -o ${results_dir}/${vmfmap_dir} -m ${samples_dir}/${map_tsv}
+            conda deactivate
+        </task>
+        
+        <foreach id="join_pe" after="initialization" of="command" in="ls -1 ${samples_dir}/*_1.fastq" as="read1file" params="join_paired_ends results_dir samples_dir">
+            source activate qiime1
+
+            read2file=$(echo $read1file | sed 's/_1.fastq/_2.fastq/')
+            
+            joined_file=$(echo $read1file | sed 's/_1.fastq//' | sed "s|$samples_dir||")
+            
+            mkdir -p ${results_dir}/joined
+            mkdir -p ${results_dir}/joined/ALL_fastq
+            
+            export PATH=/SeqPrep-master:$PATH
+            export PYTHONWARNINGS="ignore"
+            ${join_paired_ends} -m SeqPrep -o ${results_dir}/joined${joined_file} -f ${read1file} -r ${read2file}
+            
+            zcat ${results_dir}/joined${joined_file}/seqprep_assembled.fastq.gz > ${results_dir}/joined/ALL_fastq${joined_file}'.fastq'
+            conda deactivate
+        </foreach>
+
+        <task id="multiple_splitLibFastq" after="join_pe" params="multiple_split_libraries_fastq results_dir samples_dir">
+            source activate qiime1
+            mkdir -p ${results_dir}/splited
+            
+            export PATH=/SeqPrep-master:$PATH
+            
+            export PYTHONWARNINGS="ignore"
+            ${multiple_split_libraries_fastq} --read_indicator fastq --trailing_text "--phred_offset 33" -o ${results_dir}/splited -i ${results_dir}/joined/ALL_fastq
+            conda deactivate
+        </task>
+        
+        <task id="count_sequences" after="multiple_splitLibFastq" params="count_seqs results_dir count_seqs_dir slout_dir count_seqs_dir">
+            source activate qiime1
+            mkdir -p ${results_dir}/${count_seqs_dir}
+            export PYTHONWARNINGS="ignore"
+            ${count_seqs} -i ${results_dir}/splited/seqs.fna -o ${results_dir}/${count_seqs_dir}/countseqs.txt
+            conda deactivate
+        </task>
+        
+        <task id="pick_otus" after="multiple_splitLibFastq"
+            params="results_dir otus_dir pick_open_reference_otus otus_dir samples_dir otu_param_file otu_picking_method">
+            source activate qiime1
+            export PATH=/root/miniconda3/envs/qiime1/bin/:$PATH
+            rm -rf ${results_dir}/${otus_dir}
+            export PYTHONWARNINGS="ignore"
+            ${pick_open_reference_otus} -i ${results_dir}/splited/seqs.fna -o ${results_dir}/${otus_dir} -p ${samples_dir}/${otu_param_file} -m ${otu_picking_method}
+            conda deactivate
+        </task>
+        
+        <task id="otu_table_summary" after="pick_otus" params="biom results_dir otus_dir otu_table">
+            source activate qiime1
+            export PYTHONWARNINGS="ignore"
+            ${biom} summarize-table -i ${results_dir}/${otus_dir}/${otu_table} -o ${results_dir}/${otus_dir}/${otu_table}".summary"
+            ${biom} convert -i ${results_dir}/${otus_dir}/${otu_table} -o ${results_dir}/${otus_dir}/${otu_table}".json.biom" --to-json --table-type='OTU table'
+            conda deactivate
+        </task>
+      
+      <task id="otu_table_single_rarefaction" after="pick_otus" params="single_rarefaction results_dir otus_dir otu_table">
+          source activate qiime1
+          export PATH=/root/miniconda3/envs/qiime1/bin/:$PATH
+          
+          rm -rf ${results_dir}/rarefactioned_OTU
+          mkdir ${results_dir}/rarefactioned_OTU
+          export PYTHONWARNINGS="ignore"
+          ${single_rarefaction} -d 7344 -i ${results_dir}/${otus_dir}/${otu_table} -o ${results_dir}/rarefactioned_OTU/${otu_table}_rarefactioned.biom
+          conda deactivate
+      </task>
+      
+      <task id="otu_table_summary_rarefaction" after="pick_otus" params="biom results_dir otu_table">
+          source activate qiime1
+          export PYTHONWARNINGS="ignore"
+          ${biom} summarize-table -i ${results_dir}/rarefactioned_OTU/${otu_table}_rarefactioned.biom -o ${results_dir}/rarefactioned_OTU/${otu_table}"_rarefactioned.biom.summary"
+          ${biom} convert -i ${results_dir}/rarefactioned_OTU/${otu_table}_rarefactioned.biom -o ${results_dir}/rarefactioned_OTU/${otu_table}_rarefactioned".json.biom" --to-json --table-type='OTU table'
+          conda deactivate
+      </task>
+        
+        <task id="core_diversity" after="otu_table_summary"
+            params="core_diversity_analyses results_dir otus_dir otu_table samples_dir map_tsv">
+            source activate qiime1
+            export PATH=/root/miniconda3/envs/qiime1/bin/:$PATH
+            rm -rf ${results_dir}/core_diversity
+            set -x DISPLAY :0.0
+            export PYTHONWARNINGS="ignore"
+            ${core_diversity_analyses} -o ${results_dir}/core_diversity -i ${results_dir}/rarefactioned_OTU/${otu_table}_rarefactioned.biom -m ${samples_dir}/${map_tsv} -t ${results_dir}/${otus_dir}/rep_set.tre -e 7344
+            conda deactivate
+        </task>
+
+        <task id="beta_divers_through_plots" after="otu_table_summary"
+            params="beta_diversity_through_plots results_dir otus_dir otu_table samples_dir map_tsv">
+            source activate qiime1
+            export PATH=/root/miniconda3/envs/qiime1/bin/:$PATH
+            rm -rf ${results_dir}/beta_diversity
+            export PYTHONWARNINGS="ignore"
+            ${beta_diversity_through_plots} -m ${samples_dir}/${map_tsv} -t ${results_dir}/${otus_dir}/rep_set.tre -i ${results_dir}/rarefactioned_OTU/${otu_table}_rarefactioned.biom -o ${results_dir}/beta_diversity -e 7344
+            conda deactivate
+        </task>
+        
+        <task id="alpha_divers" after="otu_table_summary"
+            params="alpha_diversity results_dir otus_dir otu_table">
+            source activate qiime1
+            export PATH=/root/miniconda3/envs/qiime1/bin/:$PATH
+            rm -rf ${results_dir}/alpha_diversity
+            mkdir ${results_dir}/alpha_diversity
+            
+            export PYTHONWARNINGS="ignore"
+            
+            ${alpha_diversity} -t ${results_dir}/${otus_dir}/rep_set.tre -i ${results_dir}/rarefactioned_OTU/${otu_table}_rarefactioned.biom -o ${results_dir}/alpha_diversity/alpha_diversity.txt
+            conda deactivate
+        </task>
+        
+        <task id="compare_alpha_divers" after="core_diversity"
+            params="compare_alpha_diversity collate_alpha results_dir samples_dir vmfmap_dir">
+            source activate qiime1
+            export PATH=/root/miniconda3/envs/qiime1/bin/:$PATH
+            rm -rf ${results_dir}/compare_alpha_diversity
+            mkdir ${results_dir}/compare_alpha_diversity
+            export PYTHONWARNINGS="ignore"
+            
+            ${compare_alpha_diversity} -t nonparametric -p fdr -m ${results_dir}/${vmfmap_dir}/map.tsv_corrected.txt -c Type -i ${results_dir}/core_diversity/arare_max7344/alpha_div_collated/PD_whole_tree.txt -o ${results_dir}/compare_alpha_diversity
+            conda deactivate
+        </task>
+
+        <task id="compare_categories" after="core_diversity" params="compare_categ results_dir vmfmap_dir">
+            source activate qiime1
+            export PATH=/root/miniconda3/envs/qiime1/bin/:$PATH
+            rm -rf ${results_dir}/compare_categories
+            mkdir ${results_dir}/compare_categories
+            export PYTHONWARNINGS="ignore"
+            alias R="/usr/bin/R"
+            
+            ${compare_categ} --method anosim -n 999 -m ${results_dir}/${vmfmap_dir}/map.tsv_corrected.txt -c Type -i ${results_dir}/core_diversity/bdiv_even7344/weighted_unifrac_dm.txt -o ${results_dir}/compare_categories
+            conda deactivate
+        </task>
+        
+        <task id="filter_otus" after="otu_table_single_rarefaction" params="filter_otus_from_otu_table results_dir otu_table">
+            source activate qiime1
+            export PATH=/root/miniconda3/envs/qiime1/bin/:$PATH
+            rm -rf ${results_dir}/filtered_otus
+            mkdir ${results_dir}/filtered_otus
+            export PYTHONWARNINGS="ignore"
+            
+            ${filter_otus_from_otu_table} --min_samples 4 -i ${results_dir}/rarefactioned_OTU/${otu_table}_rarefactioned.biom -o ${results_dir}/filtered_otus/filtered_OTUs.biom
+            conda deactivate
+        </task>
+        
+        <task id="group_sig" after="filter_otus" params="group_significance results_dir vmfmap_dir otu_table">
+            source activate qiime1
+            export PATH=/root/miniconda3/envs/qiime1/bin/:$PATH
+            rm -rf ${results_dir}/group_significance
+            mkdir ${results_dir}/group_significance
+            export PYTHONWARNINGS="ignore"
+            
+            ${group_significance} -c Type -m ${results_dir}/${vmfmap_dir}/map.tsv_corrected.txt -i ${results_dir}/filtered_otus/filtered_OTUs.biom -o ${results_dir}/group_significance/significant_OTUs_nonparametric_t_test.txt -s nonparametric_t_test --permutations 1000
+            conda deactivate
+        </task>
+        
+        <task id="align_sequences" after="multiple_splitLibFastq"
+            params="results_dir alignments_dir align_seqs otus_dir">
+            source activate qiime1
+            export PATH=/root/miniconda3/envs/qiime1/bin/:$PATH
+            rm -rf ${results_dir}/${alignments_dir}
+            export PYTHONWARNINGS="ignore"
+            ${align_seqs} -i ${results_dir}/splited/seqs.fna -o ${results_dir}/${alignments_dir}
+            conda deactivate
+        </task>
+        
+        <task id="phylogeny" after="align_sequences"
+            params="results_dir phylogeny_dir make_phylogeny alignments_dir">
+            source activate qiime1
+            export PATH=/root/miniconda3/envs/qiime1/bin/:/clustalw-2.1-linux-x86_64-libcppstatic:/clearcut-master:$PATH
+            mkdir -p ${results_dir}/${phylogeny_dir}
+            
+            export PYTHONWARNINGS="ignore"
+            ${make_phylogeny} -t clearcut -i ${results_dir}/${alignments_dir}/seqs_aligned.fasta -o ${results_dir}/${phylogeny_dir}/rep_phylo.tre -l ${results_dir}/${phylogeny_dir}/make_phylogeny.log
+            conda deactivate
+        </task>
+        
+
+        <task id="phyloseq" after="pick_otus" interpreter="/usr/bin/R -e &quot;$(echo &quot;$task_code&quot; | tr -d '\t')&quot;"
+            params="results_dir phyloseq_dir otus_dir otu_table phylogeny_dir vmfmap_dir">
+            <![CDATA[
+if(!dir.exists(paste(Sys.getenv("results_dir"),Sys.getenv("phyloseq_dir"),sep="/"))){dir.create(paste(Sys.getenv("results_dir"),Sys.getenv("phyloseq_dir"),sep="/"))}
+
+library("phyloseq")
+library("ggplot2")
+library("vegan")
+
+
+#Import OTU table and tree
+                otutable = import_biom(BIOMfilename = paste(Sys.getenv("results_dir"),Sys.getenv("otus_dir"),paste(Sys.getenv("otu_table"),".json.biom",sep=""),sep="/"), treefilename = paste(Sys.getenv("results_dir"),Sys.getenv("otus_dir"),"rep_set.tre",sep="/"), parseFunction = parse_taxonomy_greengenes)
+
+
+mapping = import_qiime_sample_data(mapfilename=paste(Sys.getenv("results_dir"),Sys.getenv("vmfmap_dir"),"map.tsv_corrected.txt",sep="/"))
+
+data = merge_phyloseq(otutable, mapping)
+#data = prune_taxa(taxa_sums(data) > 5, data);
+#data = prune_samples(sample_sums(data) > 2, data);
+
+#get the full list of 'Genus' present
+#rank_names(data)
+#dataGenus = tax_glom(data,"Genus")
+
+#Create a new phyloseq object called “propdata” with relative abundances
+propdata = transform_sample_counts(data, function(x) x/sum(x))
+dataKingdom = tax_glom(data, "Kingdom")
+taxa_names(dataKingdom)
+taxa_names(dataKingdom) = as.vector(dataKingdom@tax_table[,1])
+propdataKingdom = tax_glom(propdata, rank_names(data)[1]);
+dataPhylum = tax_glom(data, rank_names(data)[2]);
+propdataPhylum = tax_glom(propdata, rank_names(data)[2]);
+taxa_names(propdataPhylum) = tax_table(propdataPhylum)[,2];
+sum(taxa_sums(propdataPhylum) < 0.8);
+less_freq_taxa = which(taxa_sums(propdataPhylum) < 0.8);
+propdataPhylum2 = merge_taxa(propdataPhylum,less_freq_taxa, archetype=1L);
+otu_table(propdataPhylum2);
+taxa_names(propdataPhylum2)[taxa_names(propdataPhylum2)%in%taxa_names(propdataPhylum)[less_freq_taxa]] <- "rare";
+otu_table(propdataPhylum2);
+#otu2 = otu_table(propdataPhylum2)[c(1:4,6,5),];
+otu2 = otu_table(propdataPhylum2);
+
+pdf( paste(Sys.getenv("results_dir"),Sys.getenv("phyloseq_dir"),"Phyloseq_PLOTS.pdf",sep="/") );
+default.par = par();
+par(default.par);
+plot_bar(dataKingdom, fill="Kingdom");
+plot_bar(propdataKingdom, fill="Kingdom");
+plot_bar(dataPhylum, fill="Phylum");
+plot_bar(propdataPhylum, fill="Phylum");
+par(xpd=TRUE, mar= c(5, 4, 4, 7) + 0.1, pin=c(6,4));
+barplot(otu2, ylim=c(0,1.1), col=2:7, beside=FALSE, space=0, las=3,xlab="", ylab="%", main="Composition at Phylum level",xaxt="n");
+legend(26,1,legend=rownames(otu2), fill=2:7, bty="n");
+
+my_table = NULL
+bck_data=data
+bck2_data=data
+
+# OTUS selected in Fig.1
+#selotus=c("559527","365181","363794","659361","198928","325977","1107027","1111582","922761","820346","180082","325850","352933","592139","4451251","3631","33851","1077373","360238","295085","495396","786449","4333897","813479","49633","197562","185186","174842","808486","4391262","3867172","75977","220970","4448331","197537","187623","181155","141145","759751","328905","461795","367215","4174963","328617","60967","50254","358333","21685","1684221","176337","339905","24351","289452","198183","197343","199524","2063400","1928156","77070","975306","528652","842596","367092")
+
+#sample_order=c("P06.fastq","P11.fastq","P30.fastq","P10.fastq","P22.fastq","P15.fastq","P42.fastq","P05.fastq","P21.fastq","P12.fastq","P08.fastq","P38.fastq","P14.fastq","P25.fastq","P32.fastq","P18.fastq","P41.fastq","P01.fastq","P31.fastq","P04.fastq","P35.fastq","P03.fastq","P26.fastq","P19.fastq","P17.fastq","P40.fastq","P07.fastq","P29.fastq","P39.fastq","P33.fastq","P02.fastq","P24.fastq","P13.fastq","P37.fastq","P09.fastq","P28.fastq","P27.fastq","P23.fastq","P34.fastq","P36.fastq","P16.fastq","P20.fastq");
+
+# *** RESULT: OTUS significant by our Qiime analyses, that appear in Fig.1 or in Table S4 of their paper.
+selotus=c("559527","365181","363794","659361","198928","325977","1107027","1111582","922761","180082","325850","187623","367215","367092","199524") #,"New.CleanUp.ReferenceOTU4384")
+
+# Qiime ALTERNATIVE: gives the best classification of patients, but it is supervised
+#selotus=c("559527","365181","363794","659361","198928","325977","1107027","1111582","922761","180082","325850","187623","367215","367092","New.CleanUp.ReferenceOTU4384")#,"199524")
+
+# selected by selbal
+#selotus=c("185186","574689","367092")
+
+#selected by DESeq2 FDR<0.05
+#selotus=c("4435655","1111582")
+
+# Qiime Pval < 0.05 and edgeR adj Pval < 0.05
+selotus=c("1111582","659361","363794","325977","New.CleanUp.ReferenceOTU6521","325850","922761","198928","558420","365181","1107027")
+
+for (i in selotus){ if(i %in% rownames(otu_table(data))){my_table = rbind(my_table, otu_table(data)[rownames(otu_table(data))==i])}}
+
+#library("scales")
+#otu_table(data)@.Data <- rescale(my_table,to=c(-1,1))
+otu_table(data)@.Data <- log10(my_table+1)
+
+#library("ComplexHeatmap")
+#annot_heatmap <- data.frame(response = sample_data(data)$Type)
+#col = list(response=c("Responder"="green","Non_responder"="red"))
+#ha <- HeatmapAnnotation(annot_heatmap,col=col)
+#heatmap(otu_table(data))#,top_annotation=ha)
+
+library(pheatmap)
+OTU_info = data.frame(sample_data(data)$Type)
+rownames(OTU_info) = sample_data(data)$X.SampleID
+labelcol=as.vector(sample_data(data)$Subject)
+
+pheatmap(otu_table(data),annotation_col=OTU_info, labels_col=labelcol, cluster_rows = T, cluster_cols = T, annotation_names_row=FALSE, annotation_names_col=FALSE, border_color=FALSE, scale="row", cex=1, clustering_distance_rows="euclidean", clustering_method="single", cellwidth = 5, cellheight = 5, angle_col = "270", fontsize = 6, fontsize_row = 4, fontsize_col = 4)
+
+data=bck_data
+
+
+plot_heatmap(dataPhylum,sample.order="Type", method="NMDS");
+plot_heatmap(dataPhylum,sample.label="Type", sample.order="Type", taxa.order=selotus, method="NMDS", low="#66CCFF",high="#000033", na.value="white");
+plot_heatmap(data, low="#0000FF",high="#FF0000",na.value="white",clstmethod="hclust")
+plot_heatmap(data,sample.label="Type", low="#0000FF",high="#FF0000",na.value="white",clstmethod="hclust")
+
+
+rich = estimate_richness(data, measures =c("Observed", "Chao1", "Shannon"));
+plot_richness(data, x="Type", measures=c("Observed","Chao1","Shannon",color="Type"));
+rarecurve(t(otu_table(data))[1:5,],step=5000);
+BC.dist <- distance(data, method ="bray");
+as.matrix(BC.dist)[1,2];
+UF.dist <- distance(data, method = "unifrac");
+wUF.dist <- distance(data, method = "wunifrac");
+BC.dist <- distance(data, method ="bray");
+#BC.MDS==ordinate(data, "MDS", distance = BC.dist);
+#plot_ordination(data, BC.MDS , color="Type");
+UF.dist <- distance(data, method ="unifrac");
+UF.MDS <- ordinate(data,"MDS", distance = UF.dist);
+plot_ordination(data, UF.MDS, color="Type", title="UF.MDS");
+wUF.dist <- distance(data, method ="wunifrac");
+wUF.MDS <- ordinate(data, "MDS", distance = wUF.dist);
+plot_ordination(data, wUF.MDS,color="Type", title="wUF.MDS");
+wUF.NMDS <- ordinate(data, "NMDS", distance = wUF.dist);
+plot_ordination(data, wUF.NMDS, color="Type", title="wUF.NMDS");
+dev.off()
+
+# Multivariate ANOVA test based on dissimilarities (PERMANOVA) using vegan function adonis()
+#test.adonis<-adonis(BC.dist~sample_data(data)$Type)
+#test.adonis
+             ]]>
+        </task>
+        
+        <task id="univariate_DESeq2" after="pick_otus" interpreter="/usr/bin/R -e &quot;$(echo &quot;$task_code&quot; | tr -d '\t')&quot;"
+            params="results_dir phyloseq_dir otus_dir otu_table phylogeny_dir vmfmap_dir">
+            <![CDATA[
+           
+                OUTDIR <- paste(Sys.getenv("results_dir"),"univariate_DESeq2",sep="/");
+                if(!dir.exists(OUTDIR)){dir.create(OUTDIR)};
+                library(phyloseq);
+                library(ggplot2);
+                library("vegan");
+                
+
+                #Import OTU table and tree
+                otutable = import_biom(BIOMfilename = paste(Sys.getenv("results_dir"),Sys.getenv("otus_dir"),paste(Sys.getenv("otu_table"),".json.biom",sep=""),sep="/"), treefilename = paste(Sys.getenv("results_dir"),Sys.getenv("otus_dir"),"rep_set.tre",sep="/"), parseFunction = parse_taxonomy_greengenes)
+                
+                mapping = import_qiime_sample_data(mapfilename=paste(Sys.getenv("results_dir"),Sys.getenv("vmfmap_dir"),"map.tsv_corrected.txt",sep="/"))
+
+
+                data = merge_phyloseq(otutable, mapping);
+                data = prune_taxa(taxa_sums(data) > 10, data);
+                data = prune_samples(sample_sums(data) > 2, data);
+
+                library("DESeq2")
+                
+                # Transform phyloseq object to deseq2 object:
+                deseqdata = phyloseq_to_deseq2(data, ~ Type)
+                
+                # Calculate geometric means prior to estimate size factors
+                gm_mean = function(x, na.rm=TRUE){
+                    exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x))
+                }
+                geoMeans = apply(counts(deseqdata), 1, gm_mean)
+                
+                # Estimate size factors given the geometric means:
+                deseqdata = estimateSizeFactors(deseqdata, geoMeans = geoMeans)
+                sF<-sizeFactors(deseqdata)
+                
+                # Perform univariate differential abundance testing with function DESeq()
+                deseqdata = DESeq(deseqdata)
+                
+                # Show results ordered by p-value:
+                res = results(deseqdata)
+                res = res[order(res$padj, na.last=NA), ]
+                res_bound = cbind(as(tax_table(data)[rownames(res), ], "matrix"),as(res, "data.frame"))
+                DESeq2_ALL <- paste(OUTDIR,"DESeq2_diffexp.xls",sep="/");
+                write.table(res_bound,file=DESeq2_ALL,sep="\t",col.names=TRUE,row.names=TRUE)
+                
+                # Show only significant results (p-value<alpha):
+                alpha = 0.01
+                sigtab = res[(res$padj < alpha), ]
+                sigtab = cbind(as(tax_table(data)[rownames(sigtab), ], "matrix"),as(sigtab, "data.frame"))
+                DESeq2_SIG <- paste(OUTDIR,"DESeq2_SIG_diff.xls",sep="/");
+                write.table(sigtab,file=DESeq2_SIG,sep="\t",col.names=TRUE,row.names=TRUE)
+                
+                # Plot results: Log2foldchange by Genus and Phylum
+                theme_set(theme_bw())
+                sigtabgen = subset(sigtab, !is.na(Genus))
+                # Phylum order
+                x = tapply(sigtabgen$log2FoldChange, sigtabgen$Phylum, function(x) max(x))
+                x = sort(x, TRUE)
+                sigtabgen$Phylum = factor(as.character(sigtabgen$Phylum), levels=names(x))
+                # Genus order
+                x = tapply(sigtabgen$log2FoldChange, sigtabgen$Genus, function(x) max(x))
+                x = sort(x, TRUE)
+                sigtabgen$Genus = factor(as.character(sigtabgen$Genus), levels=names(x))
+                
+                heatmapName <- paste(OUTDIR,"log2FC_by_FoldChange_and_Phylum.pdf",sep="/");
+                pdf(heatmapName);
+                default.par = par();
+                ggplot(sigtab, aes(x=Genus, y=log2FoldChange, color=Phylum)) + geom_point(size=6) +
+                theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))
+                dev.off()
+                
+            ]]>
+        </task>
+        
+        <task id="univariate_edgeR" after="pick_otus" interpreter="/usr/bin/R -e &quot;$(echo &quot;$task_code&quot; | tr -d '\t')&quot;"
+            params="results_dir phyloseq_dir otus_dir otu_table phylogeny_dir vmfmap_dir">
+            <![CDATA[
+                
+                OUTDIR <- paste(Sys.getenv("results_dir"),"univariate_edgeR",sep="/");
+                if(!dir.exists(OUTDIR)){dir.create(OUTDIR)};
+                library(phyloseq);
+                library(ggplot2);
+                library("vegan");
+                
+                
+                #Import OTU table and tree
+                otutable = import_biom(BIOMfilename = paste(Sys.getenv("results_dir"),Sys.getenv("otus_dir"),paste(Sys.getenv("otu_table"),".json.biom",sep=""),sep="/"), treefilename = paste(Sys.getenv("results_dir"),Sys.getenv("otus_dir"),"rep_set.tre",sep="/"), parseFunction = parse_taxonomy_greengenes)
+
+                
+                mapping = import_qiime_sample_data(mapfilename=paste(Sys.getenv("results_dir"),Sys.getenv("vmfmap_dir"),"map.tsv_corrected.txt",sep="/"))
+
+
+                data = merge_phyloseq(otutable, mapping);
+                data = prune_taxa(taxa_sums(data) > 10, data);
+                data = prune_samples(sample_sums(data) > 2, data);
+                
+                library("edgeR")
+                
+                # Desing matrix
+                dataKingdom = tax_glom(data, "Kingdom");
+                taxa_names(dataKingdom);
+                taxa_names(dataKingdom) = as.vector(dataKingdom@tax_table[,1])
+                dataPhylum = tax_glom(data, rank_names(data)[2]);
+                taxa_names(dataPhylum) = tax_table(dataPhylum)[,2];
+                rank_names(data)
+                #dataGenus = tax_glom(data,"Genus")
+                #taxa_names(dataGenus) = as.vector(dataGenus@tax_table[,2])
+                sum(taxa_sums(dataPhylum) < 0.8);
+                less_freq_taxa = which(taxa_sums(dataPhylum) < 0.8);
+                
+                #otu<-t(data) # requires taxa as rows, x is transposed
+                otu <- data
+                x = as(otu_table(otu),"matrix")
+                ncol(x)
+                y <- as.factor(t(mapping[match(colnames(x),rownames(mapping)),"Type"]))
+                
+                designMat <- model.matrix(~ y)
+                
+                
+                # Build DGEList object
+                edgeRList <- DGEList(counts = x, group = y, remove.zeros = TRUE)
+
+                # Normalization
+                edgeRList <- calcNormFactors(edgeRList, method="TMM")
+                
+                # Estimate dispersions
+                edgeRList <- estimateGLMCommonDisp(edgeRList, design = designMat)
+                # edgeRList <- estimateGLMTrendedDisp(edgeRList, design=designMat)
+                # edgeRList <- estimateGLMTagwiseDisp(edgeRList, design=designMat)
+                
+                alpha = 0.05
+                
+                et <- exactTest(edgeRList)
+                et_top <- topTags(et,n=nrow(x))
+                et_bound <- cbind(as(et_top$table,"data.frame"),as(tax_table(data)[rownames(et_top$table), ], "matrix"))
+                
+                #SELECTEDoutput <- paste(rownames(et_bound),et_bound,sep="\t")
+                #edgeR_et <- paste(OUTDIR,"edgeR_diffexp.csv",sep="/");
+                #write.csv(et_bound,file=edgeR_et,col.names=TRUE)
+                edgeR_et <- paste(OUTDIR,"edgeR_diffexp.xls",sep="/");
+                write.table(et_bound,file=edgeR_et,sep="\t",col.names=TRUE,row.names=TRUE,append = FALSE, quote = FALSE,eol="\n")
+                
+                # Differential Expression
+                #fit <- glmFit(edgeRList, designMat)
+                #lrt <- glmLRT(fit, coef=2)
+                
+                # EdgeR results
+                #p.edge<-lrt$table[,4]
+                #p.edge.adj<-p.adjust(p.edge, method = "fdr", n = length(p.edge))
+                #sum(p.edge.adj<alpha)
+                #colnames(x)[p.edge.adj<alpha]
+                #taxa_edgeR<-colnames(x)[p.edge.adj<alpha]
+                
+                #edgeR_SIG <- paste(OUTDIR,"edgeR_SIG_diff.xls",sep="/");
+                #write.table(taxa_edgeR,file=edgeR_SIG,sep="\t",col.names=TRUE,row.names=FALSE)
+                
+                
+            ]]>
+        </task>
+        
+        <task id="ancom" after="pick_otus" interpreter="/usr/bin/R -e &quot;$(echo &quot;$task_code&quot; | tr -d '\t')&quot;"
+            params="results_dir phyloseq_dir otus_dir otu_table phylogeny_dir vmfmap_dir">
+            <![CDATA[
+                
+                OUTDIR <- paste(Sys.getenv("results_dir"),"ancom",sep="/");
+                if(!dir.exists(OUTDIR)){dir.create(OUTDIR)};
+
+                library(phyloseq);
+                library(ggplot2);
+                library("vegan");
+               
+
+                #Import OTU table and tree
+                otutable = import_biom(BIOMfilename = paste(Sys.getenv("results_dir"),Sys.getenv("otus_dir"),paste(Sys.getenv("otu_table"),".json.biom",sep=""),sep="/"), treefilename = paste(Sys.getenv("results_dir"),Sys.getenv("otus_dir"),"rep_set.tre",sep="/"), parseFunction = parse_taxonomy_greengenes)
+                
+                mapping = import_qiime_sample_data(mapfilename=paste(Sys.getenv("results_dir"),Sys.getenv("vmfmap_dir"),"map.tsv_corrected.txt",sep="/"))
+
+                
+                data = merge_phyloseq(otutable, mapping);
+                data = prune_taxa(taxa_sums(data) > 10, data);
+                data = prune_samples(sample_sums(data) > 2, data);
+               
+                library("coin")
+                library("nlme")
+                library(DT)
+                library("ancom.R")
+                
+                #otu<-data.frame(data); # requires otu table as a dataframe, taxa are columns
+                otu <- t(otu_table(data))
+                #otu <- otu_table(data)
+                #x = as(otu_table(otu[,1:10]),"matrix")
+                x = as(otu_table(otu),"matrix")
+                ncol(x)
+                y <- as.factor(t(mapping[match(rownames(x),rownames(mapping)),"Type"]))
+                covariates <- data.frame(y)
+                designMat <- model.matrix(~ y)
+
+                
+                #otu <- data.frame('Sample.ID'= row.names(x),x)
+                otu <- data.frame(x)
+                otu$Group<-y
+                alpha = 0.05
+                ancom.out <- ANCOM(otu, sig = alpha, multcorr = 2) #, repeated=FALSE )
+                
+                # W statistic
+                ancom.out$W
+                
+                # Significant taxa
+                ancom.out$detected
+                taxa_ancom<-ancom.out$detected
+                
+                # Boxplot of significant taxa
+                PDFfile=paste(OUTDIR,"boxplot.pdf",sep="/")
+                pdf(PDFfile)
+                default.par = par()
+                plot_ancom(ancom.out)
+                dev.off()
+                
+                
+            ]]>
+        </task>
+        
+        
+        <task id="selbal" after="pick_otus" interpreter="/usr/bin/R -e &quot;$(echo &quot;$task_code&quot; | tr -d '\t')&quot;"
+            params="results_dir phyloseq_dir otus_dir otu_table phylogeny_dir vmfmap_dir">
+            <![CDATA[
+                
+                OUTDIR <- paste(Sys.getenv("results_dir"),"selbal",sep="/");
+                if(!dir.exists(OUTDIR)){dir.create(OUTDIR)};
+                
+                library(phyloseq);
+                library(ggplot2);
+                library("vegan");
+                
+                #Import OTU table and tree
+                otutable = import_biom(BIOMfilename = paste(Sys.getenv("results_dir"),Sys.getenv("otus_dir"),paste(Sys.getenv("otu_table"),".json.biom",sep=""),sep="/"), treefilename = paste(Sys.getenv("results_dir"),Sys.getenv("otus_dir"),"rep_set.tre",sep="/"), parseFunction = parse_taxonomy_greengenes)
+                
+                
+                mapping = import_qiime_sample_data(mapfilename=paste(Sys.getenv("results_dir"),Sys.getenv("vmfmap_dir"),"map.tsv_corrected.txt",sep="/"))
+
+
+                data = merge_phyloseq(otutable, mapping);
+                data = prune_taxa(taxa_sums(data) > 5, data);
+                data = prune_samples(sample_sums(data) > 2, data);
+                
+                library("devtools")
+                library("selbal")
+                
+                #otu<-data.frame(data); # requires otu table as a dataframe, taxa are columns
+                otu <- t(otu_table(data))
+                x = as(otu_table(otu[,1:60]),"matrix")
+                #x = as(otu_table(otu),"matrix")
+                ncol(x)
+                y <- as.factor(t(mapping[match(rownames(x),rownames(mapping)),"Type"]))
+                #y <- factor(c(rep("1",nrow(x)/2),rep("2",nrow(x)/2)))
+                covariates <- data.frame(y)
+                designMat <- model.matrix(~ y)
+                
+                
+                #otu <- data.frame('Sample.ID'= row.names(x),x)
+                otu <- data.frame(x)
+                otu$Group<-y
+                alpha = 0.05
+               
+                # Run selbal.cv function (with the default values for zero.rep and opt.cri)
+                CV.BAL.dic <- selbal.cv(x = x, y = y, n.fold = 5, n.iter = 10, logit.acc = "AUC") #,covar = "Group")
+                
+                selboutput <- paste(OUTDIR,"selbal.txt",sep="/");
+                write.table("Setting levels: control = Non_responder, case = Responder ",file=selboutput,sep="\t",col.names=TRUE,row.names=FALSE)
+                
+                PDFfile=paste(OUTDIR,"accuracy.nvar.pdf",sep="/")
+                pdf(PDFfile)
+                default.par = par()
+                CV.BAL.dic$accuracy.nvar
+                dev.off()
+                
+                PDFfile=paste(OUTDIR,"var.barplot.pdf",sep="/")
+                pdf(PDFfile)
+                CV.BAL.dic$var.barplot
+                dev.off()
+                
+                PDFfile=paste(OUTDIR,"global.plot.pdf",sep="/")
+                pdf(PDFfile)
+                grid.draw(CV.BAL.dic$global.plot)
+                dev.off()
+                
+                PDFfile=paste(OUTDIR,"cv.tab.pdf",sep="/")
+                pdf(PDFfile)
+                plot.tab(CV.BAL.dic$cv.tab)
+                dev.off()
+                
+                
+            ]]>
+        </task>
+        
+    </tasks>
+    <metadata>
+        <task-description id="initialization">Creates initial directories for results.</task-description>
+        <task-description id="validate_mapping">Qiime: checks user's metadata mapping file for required data, valid format.</task-description>
+        <task-description id="count_sequences">Qiime: counts the sequences in a fasta file.</task-description>
+        <task-description id="pick_otus">Qiime: Assigns similar sequences to OTUs, by clustering sequences based on a user-defined similarity threshold. Sequences which are similar at or above the threshold level are taken to represent the presence of a taxononic unit in the sequence collection.</task-description>
+        <task-description id="otu_table_summary">biom-format.org: summarizes an OTU table and converts it to a 'json.biom' file.</task-description>
+        <task-description id="core_diversity">Qiime: runs a diversity analysis beginning with an OTU table.</task-description>
+        <task-description id="align_sequences">Qiime: aligns the sequences in a FASTA file to each other or to a template sequence alignment, depending on the method chosen (Default: PyNAST).</task-description>
+        <task-description id="phylogeny">Qiime: produces a phylogenetic tree relating the OTUs in a study.</task-description>
+        <task-description id="phyloseq">Phyloseq: Imports an OTU table in '.json.biom' format, and a Qiime sample data and determines different taxa attributes, prunes the samples, estimates richness and performs different distance plots. It also performs a multivariate ANOVA test based on dissimilarities (PERMANOVA) using the vegan function 'adonis'.</task-description>
+        <task-description id="univariate_DESeq2">DESeq2: finds out which taxa are differentially abundant between sample groups.</task-description>
+        <task-description id="univariate_edgeR">edgeR: finds out which taxa are differentially abundant between sample groups.</task-description>
+        <task-description id="ancom">Ancom: compositional data analysis.</task-description>
+        <task-description id="selbal">Saelbal: compositional data analysis.</task-description>
+    </metadata>
+
+	
+</pipeline>
